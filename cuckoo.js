@@ -26,20 +26,20 @@
     Cuckoo.prototype = {
         simpleBounds: function (s, Lb, Ub){
             for (var i=0; i< s.length; i++){
-                if (s[i]<lb){
-                    s[i]=lb
+                if (s[i]<Lb[i]){
+                    s[i]=Lb[i]
                 }
                 else{
-                    if (s[i]>ub){
-                        s[i]=ub
+                    if (s[i]>Ub[i]){
+                        s[i]=Ub[i]
                     }
                 }
             }
             return s;
         },
 
-        makeFeasible: function (s, lb, ub){
-            all = new Set(Array.from(new Array(ub-lb+1), (x,i) => i + lb))
+        makeFeasible: function (s, Lb, Ub){// need to fix 
+            all = new Set(Array.from(new Array(Ub-Lb+1), (x,i) => i + lb))
             s1 = set(s)
             if (s1 == s)
             {                
