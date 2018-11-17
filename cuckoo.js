@@ -4,14 +4,14 @@ require("underscore");
     //'use strict';
 
     function objectiveFunction(x) {
-        var result=0;
-        for(var i in x){
-            result+=x[i]
+        var result = 0;
+        for (var i in x) {
+            result += x[i]
         }
         return result;
     }
 
-    function Cuckoo(nestCount, dimension, maxGeneration, Pa, Lb, Ub) {
+    function Cuckoo(nestCount, dimension, Pa, Lb, Ub) {
         // nestCount: The number of nests;
         // dimension: The dimension of x;
         // maxGeneration: Maximum generation of enumeration;
@@ -25,60 +25,56 @@ require("underscore");
 
         //--------------------------need to fix to Lb and Ub--------------------------
         var lb, ub, n, d, maxgen, pa, nests, fitness, best, k;
-        Lb = 0; // lower bound
-        Ub = 99;// upper bound
-        this.lb = Lb;
-        this.ub = Ub;
+        this.lb = Lb;// lower bound
+        this.ub = Ub;// upper bound
 
         //----------------------------------------------------------------------------
 
-        n = 10;  // number of nests
-        d = 5;   // number of dimensions (number of facilities)
-        maxgen = 100;
-
-
-        pa = 0.25; // Discovery rate of alien eggs/solutions
-
-        nests = [];
-        fitness = [];
-
-        for (var ii = 0; ii < n; ii++) {
-            nests.push(_.sample(Array.from(new Array(Ub - Lb + 1), (x, i) => i + Lb), d));
-        }
-        for (var ii = 0; ii < nests.length; ii++) {
-            fitness.push(10000000);
-        }
-
-        var tempObject = this._getBestNest(nests, nests, fitness);
-        best = tempObject[0];
-        k = tempObject[1];
-
-        for (var i=0; i < maxgen; i++) {
-            newNests = this._getCuckoos(nests, best)
-            var tempObject = this._getBestNest(nests, newNests, fitness)
-            best = tempObject[0];
-            k = tempObject[1];
-            
-            console.log("loop1: ",best, fitness[k])
-
-            newNests = this._emptyNests(nests, lb, ub, pa)
-            var tempObject = this._getBestNest(nests, newNests, fitness)
-            best = tempObject[0];
-            k = tempObject[1];
-            
-            console.log("loop2: ",best, fitness[k])
-        }
-
-        console.log(best, fitness[k])
-
-
+        this.nestCount = nestCount;  // number of nests
+        this.dimension = dimension;   // number of dimensions (number of facilities)
+        this.pa = Pa;
     }
 
     Cuckoo.prototype = {
+        output: function(){
+            return [this.best, this.fitness[this.k]]
+        },
 
         init: function () {
+            this.nests = [];
+            this.fitness = [];
 
+            for (var ii = 0; ii < this.nestCount; ii++) {
+                this.nests.push(_.sample(Array.from(new Array(this.ub - this.lb + 1), (x, i) => i + this.lb), this.dimension));
+            }
+            for (var ii = 0; ii < this.nests.length; ii++) {
+                this.fitness.push(10000000);
+            }
+
+            var tempObject = this._getBestNest(this.nests, this.nests, this.fitness);
+            this.best = tempObject[0];
+            this.k = tempObject[1];
         },
+
+        next: function(outputFlag){//outputFlag: If yes, print results during the loop.
+
+            var newNests = this._getCuckoos(this.nests, this.best)
+            var tempObject = this._getBestNest(this.nests, newNests, this.fitness)
+            this.best = tempObject[0];
+            this.k = tempObject[1];
+            if(outputFlag){
+                console.log("GetCuckoos: ", this.best, this.fitness[this.k]);
+            }
+    
+            newNests = this._emptyNests(this.nests, this.lb, this.ub, this.pa)
+            var tempObject = this._getBestNest(this.nests, newNests, this.fitness)
+            this.best = tempObject[0];
+            this.k = tempObject[1];
+            if(outputFlag){
+                console.log("EmptyNests: ", this.best, this.fitness[this.k]);
+            }
+        },
+
         _randNorm: function () {
             var u = 0, v = 0;
             while (u === 0) u = Math.random(); //Converting [0,1) to (0,1)
@@ -109,7 +105,7 @@ require("underscore");
             }
             diff = _.difference(all, s1);
 
-            var concatR=s1.concat(_.sample(diff, s.length - s1.length))
+            var concatR = s1.concat(_.sample(diff, s.length - s1.length))
             return concatR;
         },
 
@@ -118,7 +114,7 @@ require("underscore");
             var fbest = fitness[0];
             var k = 0;
             var fnew;
-            
+
             for (var i = 0; i < n; i++) {
                 // ____________________
                 fnew = objectiveFunction(nests_new[i])
@@ -135,7 +131,7 @@ require("underscore");
         },
 
         _getCuckoos: function (nests, best) {
-            var n, d, u, v, step, stepSize, s1, newNests,s;
+            var n, d, u, v, step, stepSize, s1, newNests, s;
             n = nests.length;
             d = best.length;
             newNests = [];
@@ -145,13 +141,13 @@ require("underscore");
                 v = [];
                 step = [];
                 stepSize = [];
-                s1=[];
+                s1 = [];
                 for (var j = 0; j < d; j++) {
                     u.push(this._randNorm() * this.sigma);
                     v.push(this._randNorm());
-                    step.push(u[j] / Math.pow(Math.abs(v[j]) , (1 / this.beta)));
+                    step.push(u[j] / Math.pow(Math.abs(v[j]), (1 / this.beta)));
                     stepSize.push(0.01 * step[j] * (s[j] - best[j]));
-                    s1.push(parseInt(s[j] + stepSize[j] *this. _randNorm()));
+                    s1.push(parseInt(s[j] + stepSize[j] * this._randNorm()));
                 }
                 this._simpleBounds(s1, this.lb, this.ub);
                 s1 = this._makeFeasible(s1, this.lb, this.ub);
@@ -178,8 +174,8 @@ require("underscore");
 
             }
 
-            sampleAll=[];
-            for (var a=0;a<n;a++){
+            sampleAll = [];
+            for (var a = 0; a < n; a++) {
                 sampleAll.push(a)
             }
             sample1 = _.sample(sampleAll, n);
@@ -191,7 +187,7 @@ require("underscore");
                 s1 = nests[sample1[i]];
                 s2 = nests[sample2[i]];
                 stepsize = [];
-                s=[];
+                s = [];
                 for (var j = 0; j < s1.length; j++) {
                     stepsize.push(Math.random() * (s1[j] - s2[j]));
                     s.push(parseInt(nests[i][j] + stepsize[j] * k[j]));
@@ -206,7 +202,16 @@ require("underscore");
 
     }
 
-    var cuckoo = new Cuckoo();
+    var cuckoo = new Cuckoo(10, 5, 0.25, 0, 99);
+    cuckoo.init();
+    var maxgen=100;
+    
+    for (var i = 0; i < maxgen; i++) {
+        cuckoo.next();
+    }
+
+
+
 
 })()
 
