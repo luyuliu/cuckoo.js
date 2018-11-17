@@ -4,7 +4,11 @@ require("underscore");
     //'use strict';
 
     function objectiveFunction(x) {
-        return Math.sin(x)
+        var result=0;
+        for(var i in x){
+            result+=x[i]
+        }
+        return result;
     }
 
     function Cuckoo(nestCount, dimension, maxGeneration, Pa, Lb, Ub) {
@@ -45,7 +49,6 @@ require("underscore");
             fitness.push(10000000);
         }
 
-        var a = [1, 2, 3, 4]
         var tempObject = this._getBestNest(nests, nests, fitness);
         best = tempObject[0];
         k = tempObject[1];
@@ -55,11 +58,15 @@ require("underscore");
             var tempObject = this._getBestNest(nests, newNests, fitness)
             best = tempObject[0];
             k = tempObject[1];
+            
+            console.log("loop1: ",best, fitness[k])
+
             newNests = this._emptyNests(nests, lb, ub, pa)
             var tempObject = this._getBestNest(nests, newNests, fitness)
             best = tempObject[0];
             k = tempObject[1];
-            console.log("loop: ",best, fitness)
+            
+            console.log("loop2: ",best, fitness[k])
         }
 
         console.log(best, fitness[k])
@@ -110,7 +117,6 @@ require("underscore");
             var k = 0;
             var fnew;
             
-            console.log(nests_new)
             for (var i = 0; i < n; i++) {
                 // ____________________
                 fnew = objectiveFunction(nests_new[i])
