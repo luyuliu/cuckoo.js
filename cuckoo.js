@@ -102,13 +102,15 @@ require("underscore");
 
         _makeFeasible: function (s, Lb, Ub) {
             var all, s1;
-            all = Array.from(new Array(this.ub - this.lb + 1), (x, i) => i + Lb);
+            all = Array.from(new Array(Ub - Lb + 1), (x, i) => i + Lb);
             s1 = _.uniq(s);
-            if (s1 == s) {
+            if (s1.length == s.length) {
                 return s
             }
             diff = _.difference(all, s1);
-            return s1.concat(_.sample(diff, s.length - s1.length));
+
+            var concatR=s1.concat(_.sample(diff, s.length - s1.length))
+            return concatR;
         },
 
         _getBestNest: function (nests, nests_new, fitness) {
@@ -151,8 +153,8 @@ require("underscore");
                     stepSize.push(0.01 * step[j] * (s[j] - best[j]));
                     s1.push(parseInt(s[j] + stepSize[j] *this. _randNorm()));
                 }
-                this._simpleBounds(s1, this.Lb, this.Ub);
-                s1 = this._makeFeasible(s1, this.Lb, this.Ub);
+                this._simpleBounds(s1, this.lb, this.ub);
+                s1 = this._makeFeasible(s1, this.lb, this.ub);
                 newNests.push(s1);
             }
 
@@ -194,8 +196,8 @@ require("underscore");
                     stepsize.push(Math.random() * (s1[j] - s2[j]));
                     s.push(parseInt(nests[i][j] + stepsize[j] * k[j]));
                 }
-                this._simpleBounds(s1, this.Lb, this.Ub);
-                s = this._makeFeasible(s, this.Lb, this.Ub)
+                this._simpleBounds(s, this.lb, this.ub);
+                s = this._makeFeasible(s, this.lb, this.ub)
                 newNests.push(s)
             }
             return newNests;
