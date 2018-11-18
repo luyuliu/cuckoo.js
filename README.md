@@ -3,16 +3,21 @@
 An Javascript library to implement cuckoo search (basic version).
 
 ## Import
-Please be aware that this library depends on [underscore.js](https://underscorejs.org/).
+Please be aware that this library depends on [underscore.js](https://underscorejs.org/). Make sure install underscore.js before using.
 
 Web browser environment: 
 ```HTML
 <script src="cuckoo.js"></script>
 ```
 
-Node.js environment (not available yet):
+Node.js environment:
 ```bash
-$ npm install cuckoo
+$ npm install cuckoo (not available yet)
+```
+and
+
+```js
+Cuckoo = require("../cuckoo.js"); // Add to the first line.
 ```
 
 ## Usage
@@ -38,6 +43,8 @@ cuckoo.output();
 
 ## Example
 ```js
+Cuckoo = require("../cuckoo.js");
+
 var objectiveFunction1 = function (x) {
     var result = 0;
     for (var i in x) {
@@ -56,4 +63,6 @@ for (var i = 0; i < maxgen; i++) {
     cuckoo.next(false);
     console.log(cuckoo.output());
 }
+
+
 ```
