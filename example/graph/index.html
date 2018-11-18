@@ -26,7 +26,9 @@ path {
     <div id="option">
         <input name="updateButton" type="button" value="Next" onclick="updateData()" />
         Solution: <input id="solution" type="text" name="1" value="">
-        Objective: <input id="objective" type="text" name="2" value=""><br><br><br>
+        Objective: <input id="objective" type="text" name="2" value=""><br>
+        <input name="runButton" type="button" value="Run" onclick="autoRun()" />
+        Iteration: <input id="iteration" type="text" name="3" value=""><br><br><br>
         Function: <select id="function">
             <option value="sum">y = x1 + x2</option>
             <option value="rosen">Rosenbrock function</option>
@@ -50,12 +52,13 @@ path {
             }
             return result;
         }
-
+        iteration = 0;
         var upperBound = [25, 25];
         var lowerBound = [0, 0];
         var cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
         cuckoo.init();
         var maxgen = 100;
+        var veryBest = 0;
 
         var data = [];
         var currentData = cuckoo.output().solution;
@@ -113,6 +116,7 @@ path {
             .attr("cy", function (d) {
                 return y(d.y);
             })
+            .attr("class", "dots")
             .on('mouseover', function (d, i) {
             })
 
@@ -142,12 +146,14 @@ path {
 
             document.getElementById("solution").value = cuckoo.output().solution;
             document.getElementById("objective").value = cuckoo.output().objective;
+            document.getElementById("iteration").value = ++iteration;
+
 
             // Select the section we want to apply our changes to
             var svg = d3.select("body").transition();
 
-            x.domain([d3.min(data, function (d) { return d.x-2; }), d3.max(data, function (d) { return d.x+2; })]);
-            y.domain([d3.min(data, function (d) { return d.y-2; }), d3.max(data, function (d) { return d.y+2; })]);
+            x.domain([d3.min(data, function (d) { return d.x - 2; }), d3.max(data, function (d) { return d.x + 2; })]);
+            y.domain([d3.min(data, function (d) { return d.y - 2; }), d3.max(data, function (d) { return d.y + 2; })]);
             // Make the changes
             svg.select(".line")   // change the line
                 .duration(250)
@@ -159,8 +165,10 @@ path {
                 .duration(250)
                 .call(yAxis);
 
-            g.selectAll("dot").data(data).enter().duration(250)
-            .append("circle")
+            g.selectAll(".dots").remove();
+
+            g.selectAll("dot").data(data).enter()
+                .append("circle")
                 .attr("r", 4)
                 .attr("cx", function (d) {
                     return x(d.x);
@@ -171,8 +179,26 @@ path {
                 .on('mouseover', function (d, i) {
 
                 })
+                .attr("class", "dots");
 
         }
+
+        function autoRun() {
+            i =0 ;
+            synchLoop();
+        }
+
+        function synchLoop() {
+            i++;
+            if (i < maxgen && veryBest!= cuckoo.output().objective) {
+                updateData()
+                setTimeout(function(){
+                    synchLoop()
+
+                }, 800);
+            }
+        }
+
 
         $("#function").on("change", function (e) {
             console.log("change to: ", e.target.value)
