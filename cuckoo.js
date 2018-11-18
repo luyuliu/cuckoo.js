@@ -1,5 +1,3 @@
-require("underscore");
-
 (function () {
     //'use strict';
 
@@ -11,7 +9,10 @@ require("underscore");
         // lb: Lower bound;
         // ub: Upper bound;
 
-        _ = require("underscore")
+        if (typeof module !== 'undefined' && module.exports) {
+            // + in *node*
+            _ = require("underscore")
+        }
         this.beta = 3 / 2; // recommended parameter
         this.sigma = 0.6965745025576967; // recommended parameter
 
@@ -210,29 +211,14 @@ require("underscore");
 
     }
 
-    _ = require("underscore")
-
-    var objectiveFunction1 = function (x) {
-        var result = 0;
-        for (var i in x) {
-            result += (x[i])
-        }
-        return result;
+    if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+        // + from a *WebWorker*
+        self.Cuckoo = Cuckoo;
+    } else if (typeof module !== 'undefined' && module.exports) {
+        // + in *node*
+        module.exports = Cuckoo;
+    } else {
+        // + or in a plain browser environment
+        window.Cuckoo = Cuckoo;
     }
-
-    var upperBound = [99, 99, 99, 99];
-    var lowerBound = [22, 0, 0, 0];
-    var cuckoo = new Cuckoo(objectiveFunction1, 10, 4, 0.25, lowerBound, upperBound);
-    cuckoo.init();
-    var maxgen = 100;
-
-    for (var i = 0; i < maxgen; i++) {
-        cuckoo.next(false);
-        console.log(cuckoo.output());
-    }
-
-
-
-
 })()
-
