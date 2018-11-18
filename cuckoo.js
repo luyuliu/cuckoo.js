@@ -3,7 +3,7 @@ require("underscore");
 (function () {
     //'use strict';
 
-    function Cuckoo(objectiveFunction, nestCount, dimension, Pa, Lb, Ub) {
+    function Cuckoo(objectiveFunction, nestCount, dimension, Pa, Lb, Ub, uniqueFlag) {
         // nestCount: The number of nests;
         // dimension: The dimension of x;
         // maxGeneration: Maximum generation of enumeration;
@@ -15,17 +15,18 @@ require("underscore");
         this.beta = 3 / 2; // recommended parameter
         this.sigma = 0.6965745025576967; // recommended parameter
 
-        //--------------------------need to fix to Lb and Ub--------------------------
-        this.lb = Lb;// lower bound
-        this.ub = Ub;// upper bound
-
-        //----------------------------------------------------------------------------
+        this.objectiveFunction = objectiveFunction;
 
         this.nestCount = nestCount;  // number of nests
         this.dimension = dimension;   // number of dimensions (number of facilities)
-        this.pa = Pa;
+        this.pa = Pa;// cuckoo found rate
+        this.lb = Lb;// lower bound
+        this.ub = Ub;// upper bound
+        if (uniqueFlag === undefined) {
+            uniqueFlag = false;
+        }
+        this.uniqueFlag = uniqueFlag;
 
-        this.objectiveFunction = objectiveFunction;
     }
 
     Cuckoo.prototype = {
@@ -153,7 +154,9 @@ require("underscore");
                     s1.push(parseInt(s[j] + stepSize[j] * this._randNorm()));
                 }
                 this._simpleBounds(s1, this.lb, this.ub);
-                s1 = this._makeFeasible(s1, this.lb, this.ub);
+                if (this.uniqueFlag) {
+                    s1 = this._makeFeasible(s1, this.lb, this.ub);
+                }
                 newNests.push(s1);
             }
 
@@ -196,7 +199,9 @@ require("underscore");
                     s.push(parseInt(nests[i][j] + stepsize[j] * k[j]));
                 }
                 this._simpleBounds(s, this.lb, this.ub);
-                s = this._makeFeasible(s, this.lb, this.ub)
+                if (this.uniqueFlag) {
+                    s = this._makeFeasible(s, this.lb, this.ub)
+                }
                 newNests.push(s)
             }
             return newNests;
@@ -216,8 +221,8 @@ require("underscore");
     }
 
     var upperBound = [99, 99, 99, 99];
-    var lowerBound = [0, 0, 0, 0];
-    var cuckoo = new Cuckoo(objectiveFunction1, 10, 4, 0.25, lowerBound, upperBound, uniqueFlag);
+    var lowerBound = [22, 0, 0, 0];
+    var cuckoo = new Cuckoo(objectiveFunction1, 10, 4, 0.25, lowerBound, upperBound);
     cuckoo.init();
     var maxgen = 100;
 
