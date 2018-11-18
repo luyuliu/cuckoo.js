@@ -42,6 +42,8 @@ cuckoo.output();
 ```
 
 ## Example
+Live demo: https://luyuliu.github.io/cuckoo.js/example/graph/
+
 ```js
 Cuckoo = require("../cuckoo.js");
 
