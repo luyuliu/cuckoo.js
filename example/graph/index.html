@@ -28,16 +28,17 @@ path {
         Solution: <input id="solution" type="text" name="1" value="">
         Objective: <input id="objective" type="text" name="2" value=""><br>
         <input name="runButton" type="button" value="Run" onclick="autoRun()" />
-        Iteration: <input id="iteration" type="text" name="3" value=""><br><br><br>
+        Iteration: <input id="iteration" type="text" name="3" value=""><br>
+        <input name="runButton" type="button" value="FastRun" onclick="fastRun()" /><br><br>
         Function: <select id="function">
             <option value="sum">y = x1 + x2</option>
             <option value="rosen">Rosenbrock function</option>
             <option value="booth">Booth function</option>
             <option value="him">Himmelblau's function</option>
-        </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About this function</a>
+        </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About this function</a><br>
     </div>
 
-    <a href="https://github.com/luyuliu"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/luyuliu/cuckoo.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 
     <!-- load the d3.js library -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -188,6 +189,12 @@ path {
         function autoRun() {
             i = 0;
             synchLoop();
+        }
+
+        function fastRun() {
+            for (var i=0;i<maxgen;i++){
+                updateData();
+            }
         }
 
         function synchLoop() {
