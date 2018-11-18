@@ -25,13 +25,22 @@ path {
 
     <div id="option">
         <input name="updateButton" type="button" value="Next" onclick="updateData()" />
+        Solution: <input id="solution" type="text" name="1" value="">
+        Objective: <input id="objective" type="text" name="2" value=""><br><br><br>
+        Function: <select id="function">
+            <option value="sum">y = x1 + x2</option>
+            <option value="rosen">Rosenbrock function</option>
+            <option value="booth">Booth function</option>
+            <option value="him">Himmelblau's function</option>
+        </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About this function</a>
     </div>
 
     <!-- load the d3.js library -->
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="../../cuckoo.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
 
     <script>
         var objectiveFunction1 = function (x) {
@@ -42,7 +51,7 @@ path {
             return result;
         }
 
-        var upperBound = [99, 99];
+        var upperBound = [25, 25];
         var lowerBound = [0, 0];
         var cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
         cuckoo.init();
@@ -70,8 +79,8 @@ path {
         var yAxis = d3.svg.axis().scale(y)
             .orient("left").ticks(5);
 
-        x.domain([lowerBound[0], upperBound[0]]);
-        y.domain([lowerBound[1], upperBound[1]]);
+        x.domain([lowerBound[0] - 5, upperBound[0]]);
+        y.domain([lowerBound[1] - 5, upperBound[1]]);
 
         // Define the line
         var valueline = d3.svg.line()
@@ -86,6 +95,26 @@ path {
             .append("g")
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+        var g = svg.append("g");
+
+
+        dot = g.selectAll("dot").data(data);
+
+
+
+        dot.enter().append("circle")
+            .attr("r", 4)
+            .attr("cx", function (d) {
+                return x(d.x);
+            })
+            .attr("cy", function (d) {
+                return y(d.y);
+            })
+            .on('mouseover', function (d, i) {
+            })
 
 
 
@@ -109,24 +138,74 @@ path {
         function updateData() {
             cuckoo.next(false);
             var currentData = cuckoo.output().solution;
-            data.push({ x: currentData[0], y: currentData[1]});
+            data.push({ x: currentData[0], y: currentData[1] });
 
-            console.log(cuckoo.output())
+            document.getElementById("solution").value = cuckoo.output().solution;
+            document.getElementById("objective").value = cuckoo.output().objective;
 
             // Select the section we want to apply our changes to
             var svg = d3.select("body").transition();
 
+            x.domain([d3.min(data, function (d) { return d.x-2; }), d3.max(data, function (d) { return d.x+2; })]);
+            y.domain([d3.min(data, function (d) { return d.y-2; }), d3.max(data, function (d) { return d.y+2; })]);
             // Make the changes
             svg.select(".line")   // change the line
-                .duration(750)
+                .duration(250)
                 .attr("d", valueline(data));
             svg.select(".x.axis") // change the x axis
-                .duration(750)
+                .duration(250)
                 .call(xAxis);
             svg.select(".y.axis") // change the y axis
-                .duration(750)
+                .duration(250)
                 .call(yAxis);
+
+            g.selectAll("dot").data(data).enter().duration(250)
+            .append("circle")
+                .attr("r", 4)
+                .attr("cx", function (d) {
+                    return x(d.x);
+                })
+                .attr("cy", function (d) {
+                    return y(d.y);
+                })
+                .on('mouseover', function (d, i) {
+
+                })
+
         }
+
+        $("#function").on("change", function (e) {
+            console.log("change to: ", e.target.value)
+
+            switch (e.target.value) {
+                case "rosen":
+                    objectiveFunction1 = function (x) {
+                        var result = 0;
+                        result = 100 * (x[1] - x[0] * x[0]) * (x[1] - x[0] * x[0]) + (1 - x[0]) * (1 - x[0]);
+                        return result;
+                    }
+
+                    break;
+
+                case "sum":
+
+                    break;
+                case "him":
+
+                    break;
+                case "booth":
+
+                    break;
+                default:
+
+            }
+            cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
+            cuckoo.init();
+
+
+        })
+
+
 
     </script>
 </body>
