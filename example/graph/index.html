@@ -62,7 +62,7 @@ path {
 
         var data = [];
         var currentData = cuckoo.output().solution;
-        data.push({ x: currentData[0][0], y: currentData[1][0] });
+        data.push({ x: +currentData[0][0], y: +currentData[1][0] });
 
         console.log(data)
 
@@ -152,8 +152,8 @@ path {
             // Select the section we want to apply our changes to
             var svg = d3.select("body").transition();
 
-            x.domain([d3.min(data, function (d) { return d.x - 2; }), d3.max(data, function (d) { return d.x + 2; })]);
-            y.domain([d3.min(data, function (d) { return d.y - 2; }), d3.max(data, function (d) { return d.y + 2; })]);
+            x.domain([d3.min(data, function (d) { return +d.x - 2; }), d3.max(data, function (d) { return +d.x + 2; })]);
+            y.domain([d3.min(data, function (d) { return +d.y - 2; }), d3.max(data, function (d) { return +d.y + 2; })]);
             // Make the changes
             svg.select(".line")   // change the line
                 .duration(250)
@@ -184,15 +184,15 @@ path {
         }
 
         function autoRun() {
-            i =0 ;
+            i = 0;
             synchLoop();
         }
 
         function synchLoop() {
             i++;
-            if (i < maxgen && veryBest!= cuckoo.output().objective) {
+            if (i < maxgen && veryBest != cuckoo.output().objective) {
                 updateData()
-                setTimeout(function(){
+                setTimeout(function () {
                     synchLoop()
 
                 }, 800);
@@ -201,8 +201,8 @@ path {
 
 
         $("#function").on("change", function (e) {
-            console.log("change to: ", e.target.value)
-
+            console.log("Change to: ", e.target.value)
+            iteration = 0;
             switch (e.target.value) {
                 case "rosen":
                     objectiveFunction1 = function (x) {
@@ -214,19 +214,82 @@ path {
                     break;
 
                 case "sum":
-
+                    var objectiveFunction1 = function (x) {
+                        var result = 0;
+                        for (var i in x) {
+                            result += (x[i])
+                        }
+                        return result;
+                    }
                     break;
                 case "him":
-
+                    var objectiveFunction1 = function (x) {
+                        var result = (x[0] * x[0] + x[1] - 11) * (x[0] * x[0] + x[1] - 11) + (x[0] + x[1] * x[1] - 7) * (x[0] + x[1] * x[1] - 7)
+                        return result;
+                    }
                     break;
                 case "booth":
-
+                    var objectiveFunction1 = function (x) {
+                        var result = (x[0] + 2 * x[1] - 7) * (x[0] + 2 * x[1] - 7) + (2 * x[0] + x[1] - 5) * (2 * x[0] + x[1] - 5)
+                        return result;
+                    }
                     break;
                 default:
 
             }
             cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
             cuckoo.init();
+            data = [];
+            currentData = cuckoo.output().solution;
+            data.push({ x: currentData[0][0], y: currentData[1][0] });
+
+
+            d3.selectAll("svg").remove();
+
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+
+            g = svg.append("g");
+
+            dot = g.selectAll("dot").data(data);
+
+            dot.enter().append("circle")
+                .attr("r", 4)
+                .attr("cx", function (d) {
+                    return x(d.x);
+                })
+                .attr("cy", function (d) {
+                    return y(d.y);
+                })
+                .attr("class", "dots")
+                .on('mouseover', function (d, i) {
+                })
+                
+
+            x.domain([lowerBound[0] - 5, upperBound[0]]);
+            y.domain([lowerBound[1] - 5, upperBound[1]]);
+
+            // Add the valueline path.
+            svg.append("path")
+                .attr("class", "line")
+                .attr("d", valueline(data));
+
+            // Add the X Axis
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            // Add the Y Axis
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
 
 
         })
