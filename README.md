@@ -3,6 +3,8 @@
 An Javascript library to implement cuckoo search.
 
 ## Import
+Please be aware that this library depends on [underscore.js](https://underscorejs.org/).
+
 Web browser environment: 
 ```HTML
 <script src="cuckoo.js"></script>
@@ -26,10 +28,12 @@ cuckoo.next();
 
 // Output
 cuckoo.output();
-{ 
-  solution: [ 0, 0, 0, 0 ], 
-  objective: 0 
-}
+
+// The output is:
+//{ 
+//  solution: [ 0, 0, 0, 0 ], 
+//  objective: 0 
+//}
 ```
 
 ## Example
