@@ -1,6 +1,6 @@
 # cuckoo.js
 
-An Javascript library to implement cuckoo search.
+An Javascript library to implement cuckoo search (basic version).
 
 ## Import
 Please be aware that this library depends on [underscore.js](https://underscorejs.org/).
