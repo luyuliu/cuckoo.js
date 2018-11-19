@@ -24,12 +24,17 @@ path {
 <body>
 
     <div id="option">
-        <input name="updateButton" type="button" value="Next" onclick="updateData()" />
+
         Solution: <input id="solution" type="text" name="1" value="">
         Objective: <input id="objective" type="text" name="2" value=""><br>
-        <input name="runButton" type="button" value="Run" onclick="autoRun()" />
-        Iteration: <input id="iteration" type="text" name="3" value=""><br>
-        <input name="runButton" type="button" value="FastRun" onclick="fastRun()" /><br><br>
+        Iteration: <input id="iteration" type="text" name="3" value="">
+        <input type="button" value="Next" onclick="updateData()" />
+        <input type="button" value="Run" onclick="autoRun()" />
+        <input type="button" value="FastRun" onclick="fastRun()" />
+        <input type="button" value="Refresh" onclick="reset()" /><br><br><br>
+        Keep running for <input id="runTime" type="text" name="5" value="" style="width:20px;"> times<input name="runButton"
+            type="button" value="Run!" onclick="KeepRun()" />
+        Average runtime: <input id="average" type="text" name="4" value=""><br><br><br>
         Function: <select id="function">
             <option value="sum">y = x1 + x2</option>
             <option value="rosen">Rosenbrock function</option>
@@ -38,7 +43,8 @@ path {
         </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About this function</a><br>
     </div>
 
-    <a href="https://github.com/luyuliu/cuckoo.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/luyuliu/cuckoo.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
+            alt="Fork me on GitHub"></a>
 
     <!-- load the d3.js library -->
     <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -48,7 +54,8 @@ path {
         crossorigin="anonymous"></script>
 
     <script>
-        var objectiveFunction1 = function (x) {
+        runTimeList = [];
+        objectiveFunction1 = function (x) {
             var result = 0;
             for (var i in x) {
                 result += (x[i])
@@ -192,9 +199,35 @@ path {
         }
 
         function fastRun() {
-            for (var i=0;i<maxgen;i++){
+            reset();
+            for (var i = 0; i < maxgen; i++) {
                 updateData();
+                if (cuckoo.output().objective == 0) {
+                    runTimeList.push(i)
+                    break;
+                }
             }
+            if (i==maxgen){
+                runTimeList.push(i)
+            }
+        }
+
+        function KeepRun() {
+            var runTime = $("#runTime").val();
+            runTimeList = [];
+
+            var average = 0;
+            for (var i = 0; i < +runTime; i++) {
+
+                fastRun();
+            }
+
+            for (var ii in runTimeList){
+                average+=runTimeList[ii]
+            }
+
+            $("#average").val(average/runTime);
+
         }
 
         function synchLoop() {
@@ -209,43 +242,9 @@ path {
         }
 
 
-        $("#function").on("change", function (e) {
-            console.log("Change to: ", e.target.value)
+        function reset() {
+            $("#iteration").val(0)
             iteration = 0;
-            switch (e.target.value) {
-                case "rosen":
-                    objectiveFunction1 = function (x) {
-                        var result = 0;
-                        result = 100 * (x[1] - x[0] * x[0]) * (x[1] - x[0] * x[0]) + (1 - x[0]) * (1 - x[0]);
-                        return result;
-                    }
-
-                    break;
-
-                case "sum":
-                    var objectiveFunction1 = function (x) {
-                        var result = 0;
-                        for (var i in x) {
-                            result += (x[i])
-                        }
-                        return result;
-                    }
-                    break;
-                case "him":
-                    var objectiveFunction1 = function (x) {
-                        var result = (x[0] * x[0] + x[1] - 11) * (x[0] * x[0] + x[1] - 11) + (x[0] + x[1] * x[1] - 7) * (x[0] + x[1] * x[1] - 7)
-                        return result;
-                    }
-                    break;
-                case "booth":
-                    var objectiveFunction1 = function (x) {
-                        var result = (x[0] + 2 * x[1] - 7) * (x[0] + 2 * x[1] - 7) + (2 * x[0] + x[1] - 5) * (2 * x[0] + x[1] - 5)
-                        return result;
-                    }
-                    break;
-                default:
-
-            }
             cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
             cuckoo.init();
             data = [];
@@ -278,7 +277,7 @@ path {
                 .attr("class", "dots")
                 .on('mouseover', function (d, i) {
                 })
-                
+
 
             x.domain([lowerBound[0] - 5, upperBound[0]]);
             y.domain([lowerBound[1] - 5, upperBound[1]]);
@@ -299,6 +298,47 @@ path {
                 .attr("class", "y axis")
                 .call(yAxis);
 
+
+        }
+
+
+
+        $("#function").on("change", function (e) {
+            console.log("Change to: ", e.target.value)
+            switch (e.target.value) {
+                case "rosen":
+                    objectiveFunction1 = function (x) {
+                        var result = 0;
+                        result = 100 * (x[1] - x[0] * x[0]) * (x[1] - x[0] * x[0]) + (1 - x[0]) * (1 - x[0]);
+                        return result;
+                    }
+
+                    break;
+                case "sum":
+                    objectiveFunction1 = function (x) {
+                        var result = 0;
+                        for (var i in x) {
+                            result += (x[i])
+                        }
+                        return result;
+                    }
+                    break;
+                case "him":
+                    objectiveFunction1 = function (x) {
+                        var result = (x[0] * x[0] + x[1] - 11) * (x[0] * x[0] + x[1] - 11) + (x[0] + x[1] * x[1] - 7) * (x[0] + x[1] * x[1] - 7)
+                        return result;
+                    }
+                    break;
+                case "booth":
+                    objectiveFunction1 = function (x) {
+                        var result = (x[0] + 2 * x[1] - 7) * (x[0] + 2 * x[1] - 7) + (2 * x[0] + x[1] - 5) * (2 * x[0] + x[1] - 5)
+                        return result;
+                    }
+                    break;
+
+            }
+
+            reset();
 
 
         })
