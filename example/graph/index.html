@@ -35,14 +35,24 @@ path {
 
 .button-cell{
     display: table-cell;
-    margin: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
     padding-left: 10px;
+    padding-top: 0;
 }
 
 .function-cell{
-    margin: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
     padding-left: 10px;
+    padding-top: 0;
 
+}
+
+#output-container{
+    margin-top: 0;
+    padding-left: 10px;
+    padding-top: 0;
 }
 
 </style>
@@ -71,17 +81,6 @@ path {
                 <form>
                     <fieldset>
                         <legend style="font-size:20px;">Console</legend>
-                        <div id="button-container" style="display: table-row">
-                            <div class="button-cell">Execute next step: <input type="button" value="Next" onclick="updateData()" /></div>
-                            <div class="button-cell">Run the loop (maxgen =  <input id="loop" type="text" name="7"
-                                value="100" style="width:30px;"> ) : <input type="button" value="Run"
-                                    onclick="autoRun()" /></div>
-                                   
-                            <div class="button-cell">OR     <input type="button" value="FastRun"
-                                    onclick="fastRun()" /></div>
-                            <div class="button-cell">Refresh the panel: <input type="button" value="Refresh" onclick="Reset()" /></div>
-                        </div>
-
                         <div class="function-cell"> Select the function to be minimized on this 2D space: <select id="function">
                                 <option value="sum">y = x1 + x2</option>
                                 <option value="rosen">Rosenbrock function</option>
@@ -95,6 +94,18 @@ path {
                             </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About
                                 this
                                 function</a></div>
+                        <div id="button-container" style="display: table-row">
+                            <div class="button-cell">Execute next step: <input type="button" value="Next" onclick="updateData()" /></div>
+                            <div class="button-cell">Run the loop (maxgen =  <input id="loop" type="text" name="7"
+                                value="100" style="width:30px;"> ) :</div>
+                                   
+                            <div class="button-cell"><input type="button" value="Run" title="Run the loop with a 0.5s interval."
+                                onclick="autoRun()" /> OR     <input type="button" value="FastRun" title="Run instantly."
+                                    onclick="fastRun()" /></div>
+                            <div class="button-cell">Refresh the panel: <input type="button" value="Refresh" onclick="Reset()" /></div>
+                        </div>
+
+                        
                     </fieldset>
                 </form>
             </p>
@@ -105,7 +116,7 @@ path {
                         <legend style="font-size:20px;">Simulation</legend>
                         <div id="button-container" style="display: table-row">
                             <div class="button-cell">Repeat Cuckoo search for <input id="runTime" type="text" name="5"
-                                    value="100" style="width:20px;"> times
+                                    value="10" style="width:20px;"> times
                                 <input name="runButton" type="button" value="Run!" onclick="KeepRun()" /></div>
                             <div class="button-cell">Average runtime: <input id="average" type="text" name="4" value=""></div>
                         </div>
