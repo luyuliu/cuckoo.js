@@ -73,9 +73,11 @@ path {
                         <legend style="font-size:20px;">Console</legend>
                         <div id="button-container" style="display: table-row">
                             <div class="button-cell">Execute next step: <input type="button" value="Next" onclick="updateData()" /></div>
-                            <div class="button-cell">Run the loop (maxgen = 100) : <input type="button" value="Run"
+                            <div class="button-cell">Run the loop (maxgen =  <input id="loop" type="text" name="7"
+                                value="100" style="width:30px;"> ) : <input type="button" value="Run"
                                     onclick="autoRun()" /></div>
-                            <div class="button-cell">Run the loop (maxgen = 100) faster: <input type="button" value="FastRun"
+                                   
+                            <div class="button-cell">OR     <input type="button" value="FastRun"
                                     onclick="fastRun()" /></div>
                             <div class="button-cell">Refresh the panel: <input type="button" value="Refresh" onclick="Reset()" /></div>
                         </div>
@@ -85,6 +87,11 @@ path {
                                 <option value="rosen">Rosenbrock function</option>
                                 <option value="booth">Booth function</option>
                                 <option value="him">Himmelblau's function</option>
+                                <option value="ras">Rastrigin function</option>
+                                <option value="ack">Ackley function</option>
+                                <option value="buk">Bukin function N.6</option>
+                                <option value="mat">Matyas function</option>
+                                <option value="levi">Lévi function N.13</option>
                             </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About
                                 this
                                 function</a></div>
@@ -98,7 +105,7 @@ path {
                         <legend style="font-size:20px;">Simulation</legend>
                         <div id="button-container" style="display: table-row">
                             <div class="button-cell">Repeat Cuckoo search for <input id="runTime" type="text" name="5"
-                                    value="" style="width:20px;"> times
+                                    value="100" style="width:20px;"> times
                                 <input name="runButton" type="button" value="Run!" onclick="KeepRun()" /></div>
                             <div class="button-cell">Average runtime: <input id="average" type="text" name="4" value=""></div>
                         </div>
@@ -116,10 +123,12 @@ path {
 
     </div>
     <div id="plot-container" style="float: right; width: 50%;">
-        <h2>The pane to the left is a 2D space where selected function will be minimized.</h2>
+        <h2>The pane to the left is a 2D space where selected function will be minimized. This library will only find one
+            integer solution.</h2>
         <h3>The dot points to the solution given by the Cuckoo search at each iteration.</h3>
-        <h3>The function's graph: </h3>
-        <div id="graph-container"><img style="width:70%;" id="graph" src="http://animal.discovery.com/mammals/cheetah/pictures/cheetah-picture.jpg"/></div>
+        <h3>The function's graph: (graphs are from <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">this
+                page</a>).</h3>
+        <div id="graph-container"><img style="width:70%;" id="graph" src="./graph/sum.png" /></div>
     </div>
 
     <script>
@@ -136,7 +145,7 @@ path {
         var lowerBound = [0, 0];
         var cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
         cuckoo.init();
-        var maxgen = 100;
+        var maxgen = + $("#loop").val();
         var veryBest = 0;
 
         var data = [];
@@ -263,6 +272,7 @@ path {
 
         function autoRun() {
             i = 0;
+            maxgen = + $("#loop").val();
             synchLoop();
         }
 
@@ -270,7 +280,7 @@ path {
             reset();
             for (var i = 0; i < maxgen; i++) {
                 updateData();
-                if (cuckoo.output().objective == 0) {
+                if (Math.abs(cuckoo.output().objective) <=0.001 ) {
                     runTimeList.push(i)
                     break;
                 }
@@ -314,6 +324,7 @@ path {
         }
 
         function reset() {
+            maxgen = + $("#loop").val();
             $("#iteration").val(0)
             iteration = 0;
             cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
@@ -384,7 +395,7 @@ path {
                         return result;
                     }
 
-                    url="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Rosenbrock%27s_function_in_3D.pdf/page1-800px-Rosenbrock%27s_function_in_3D.pdf.jpg"
+                    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Rosenbrock%27s_function_in_3D.pdf/page1-800px-Rosenbrock%27s_function_in_3D.pdf.jpg"
 
 
                     break;
@@ -397,7 +408,7 @@ path {
                         return result;
                     }
 
-                    ulr="./graph/sum.png"
+                    ulr = "./graph/sum.png"
                     break;
                 case "him":
                     objectiveFunction1 = function (x) {
@@ -405,7 +416,7 @@ path {
                         return result;
                     }
 
-                    url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Himmelblau_function.svg/720px-Himmelblau_function.svg.png"
+                    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Himmelblau_function.svg/720px-Himmelblau_function.svg.png"
                     break;
                 case "booth":
                     objectiveFunction1 = function (x) {
@@ -413,12 +424,62 @@ path {
                         return result;
                     }
 
-                    url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Booth%27s_function.pdf/page1-800px-Booth%27s_function.pdf.jpg"
+                    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Booth%27s_function.pdf/page1-800px-Booth%27s_function.pdf.jpg"
+                    break;
+                case "ras":
+                    objectiveFunction1 = function (x) {
+                        var y = x[1];
+                        var x = x[0];
+                        var result = 20 + x * x - 10 * Math.cos(2 * Math.PI * x) + y * y - 10 * Math.cos(2 * Math.PI * y);
+                        return result;
+                    }
+
+                    url = "https://upload.wikimedia.org/wikipedia/commons/8/8b/Rastrigin_function.png"
+                    break;
+                case "ack":
+                    objectiveFunction1 = function (x) {
+                        var y = x[1];
+                        var x = x[0];
+                        var result = -20.0 * Math.exp(-0.2 * Math.sqrt(0.5 * x * x + 0.5 * y * y)) + 20 - Math.exp(0.5 * (Math.cos(Math.PI * 2 * x) + Math.cos(Math.PI * 2 * y))) + Math.exp(1.0)
+                        return result;
+                    }
+
+                    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Ackley%27s_function.pdf/page1-800px-Ackley%27s_function.pdf.jpg"
+                    break;
+                case "buk":
+                    objectiveFunction1 = function (x) {
+                        var y = x[1];
+                        var x = x[0];
+                        var result = 100 * Math.sqrt(Math.abs(y - 0.001 * x * x)) + 0.01 * Math.abs(x + 10)
+                        return result;
+                    }
+
+                    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bukin_function_6.pdf/page1-800px-Bukin_function_6.pdf.jpg"
+                    break;
+                case "mat":
+                    objectiveFunction1 = function (x) {
+                        var y = x[1];
+                        var x = x[0];
+                        var result = 0.26*(x * x + y * y) - 0.48 * x * y;
+                        return result;
+                    }
+
+                    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Matyas_function.pdf/page1-800px-Matyas_function.pdf.jpg"
+                    break;
+                case "levi":
+                    objectiveFunction1 = function (x) {
+                        var y = x[1];
+                        var x = x[0];
+                        var result = Math.sin(3 * Math.PI * x) * Math.sin(3 * Math.PI * x) + (x - 1) * (x - 1) * (1 + Math.sin(3 * Math.PI * y) * Math.sin(3 * Math.PI * y)) + (y - 1) * (y - 1) * (1 + Math.sin(2 * Math.PI * y) * Math.sin(2 * Math.PI * y))
+                        return result;
+                    }
+
+                    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Levi_function_13.pdf/page1-800px-Levi_function_13.pdf.jpg"
                     break;
 
             }
 
-            document.getElementById("graph").src=url;
+            document.getElementById("graph").src = url;
             reset();
 
 
