@@ -1,7 +1,21 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-    /* set the CSS */
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Luyu Liu">
+    <title>Cuckoo</title>
+
+    <!-- load the d3.js library -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="../../cuckoo.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+
+
+    <style>
+        /* set the CSS */
 
 body { font: 12px Arial;}
 
@@ -19,39 +33,94 @@ path {
     shape-rendering: crispEdges;
 }
 
+.button-cell{
+    display: table-cell;
+    margin: 10px;
+    padding-left: 10px;
+}
+
+.function-cell{
+    margin: 10px;
+    padding-left: 10px;
+
+}
+
 </style>
+</head>
 
 <body>
+    <div id="upper-container">
+        <div id="banner">
+            <h1>Cuckoo Search Visualization</h1>
+        </div>
+        <div id="option">
+            <p>
+                <form>
+                    <fieldset>
+                        <legend style="font-size:20px;">Output</legend>
+                        <div id="output-container">
+                            Solution: <input id="solution" type="text" name="1" value="">
+                            Objective: <input id="objective" type="text" name="2" value="">
+                            Iteration: <input id="iteration" type="text" name="3" value="">
+                        </div>
+                    </fieldset>
+                </form>
+            </p>
 
-    <div id="option">
+            <p>
+                <form>
+                    <fieldset>
+                        <legend style="font-size:20px;">Console</legend>
+                        <div id="button-container" style="display: table-row">
+                            <div class="button-cell">Execute next step: <input type="button" value="Next" onclick="updateData()" /></div>
+                            <div class="button-cell">Run the loop (maxgen = 100) : <input type="button" value="Run"
+                                    onclick="autoRun()" /></div>
+                            <div class="button-cell">Run the loop (maxgen = 100) faster: <input type="button" value="FastRun"
+                                    onclick="fastRun()" /></div>
+                            <div class="button-cell">Refresh the panel: <input type="button" value="Refresh" onclick="Reset()" /></div>
+                        </div>
 
-        Solution: <input id="solution" type="text" name="1" value="">
-        Objective: <input id="objective" type="text" name="2" value=""><br>
-        Iteration: <input id="iteration" type="text" name="3" value="">
-        <input type="button" value="Next" onclick="updateData()" />
-        <input type="button" value="Run" onclick="autoRun()" />
-        <input type="button" value="FastRun" onclick="fastRun()" />
-        <input type="button" value="Refresh" onclick="reset()" /><br><br><br>
-        Keep running for <input id="runTime" type="text" name="5" value="" style="width:20px;"> times  <input name="runButton"
-            type="button" value="Run!" onclick="KeepRun()" />
-        Average runtime: <input id="average" type="text" name="4" value=""><br><br><br>
-        Function: <select id="function">
-            <option value="sum">y = x1 + x2</option>
-            <option value="rosen">Rosenbrock function</option>
-            <option value="booth">Booth function</option>
-            <option value="him">Himmelblau's function</option>
-        </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About this function</a><br>
+                        <div class="function-cell"> Select the function to be minimized on this 2D space: <select id="function">
+                                <option value="sum">y = x1 + x2</option>
+                                <option value="rosen">Rosenbrock function</option>
+                                <option value="booth">Booth function</option>
+                                <option value="him">Himmelblau's function</option>
+                            </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About
+                                this
+                                function</a></div>
+                    </fieldset>
+                </form>
+            </p>
+
+            <p>
+                <form>
+                    <fieldset>
+                        <legend style="font-size:20px;">Simulation</legend>
+                        <div id="button-container" style="display: table-row">
+                            <div class="button-cell">Repeat Cuckoo search for <input id="runTime" type="text" name="5"
+                                    value="" style="width:20px;"> times
+                                <input name="runButton" type="button" value="Run!" onclick="KeepRun()" /></div>
+                            <div class="button-cell">Average runtime: <input id="average" type="text" name="4" value=""></div>
+                        </div>
+                    </fieldset>
+                </form>
+            </p>
+
+
+        </div>
     </div>
-
     <a href="https://github.com/luyuliu/cuckoo.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
             alt="Fork me on GitHub"></a>
 
-    <!-- load the d3.js library -->
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="../../cuckoo.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
+    <div id="plot-container" style="float: left; width: 50%;">
+
+    </div>
+    <div id="plot-container" style="float: right; width: 50%;">
+        <h2>The pane to the left is a 2D space where selected function will be minimized.</h2>
+        <h3>The dot points to the solution given by the Cuckoo search at each iteration.</h3>
+        <h3>The function's graph: </h3>
+        <div id="graph-container"><img style="width:70%;" id="graph" src="http://animal.discovery.com/mammals/cheetah/pictures/cheetah-picture.jpg"/></div>
+    </div>
 
     <script>
         runTimeList = [];
@@ -74,7 +143,6 @@ path {
         var currentData = cuckoo.output().solution;
         data.push({ x: +currentData[0][0], y: +currentData[1][0] });
 
-        console.log(data)
 
         // Set the dimensions of the canvas / graph
         var margin = { top: 30, right: 20, bottom: 30, left: 50 },
@@ -101,7 +169,7 @@ path {
             .y(function (d) { return y(d.y); });
 
         // Adds the svg canvas
-        var svg = d3.select("body")
+        var svg = d3.select("#plot-container")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -207,7 +275,7 @@ path {
                     break;
                 }
             }
-            if (i==maxgen){
+            if (i == maxgen) {
                 runTimeList.push(i)
             }
         }
@@ -222,11 +290,11 @@ path {
                 fastRun();
             }
 
-            for (var ii in runTimeList){
-                average+=runTimeList[ii]
+            for (var ii in runTimeList) {
+                average += runTimeList[ii]
             }
 
-            $("#average").val(average/runTime);
+            $("#average").val(average / runTime);
 
         }
 
@@ -241,6 +309,9 @@ path {
             }
         }
 
+        function Reset() {
+            reset();
+        }
 
         function reset() {
             $("#iteration").val(0)
@@ -302,9 +373,9 @@ path {
         }
 
 
-
         $("#function").on("change", function (e) {
             console.log("Change to: ", e.target.value)
+            var url;
             switch (e.target.value) {
                 case "rosen":
                     objectiveFunction1 = function (x) {
@@ -312,6 +383,9 @@ path {
                         result = 100 * (x[1] - x[0] * x[0]) * (x[1] - x[0] * x[0]) + (1 - x[0]) * (1 - x[0]);
                         return result;
                     }
+
+                    url="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Rosenbrock%27s_function_in_3D.pdf/page1-800px-Rosenbrock%27s_function_in_3D.pdf.jpg"
+
 
                     break;
                 case "sum":
@@ -322,22 +396,29 @@ path {
                         }
                         return result;
                     }
+
+                    ulr="./graph/sum.png"
                     break;
                 case "him":
                     objectiveFunction1 = function (x) {
                         var result = (x[0] * x[0] + x[1] - 11) * (x[0] * x[0] + x[1] - 11) + (x[0] + x[1] * x[1] - 7) * (x[0] + x[1] * x[1] - 7)
                         return result;
                     }
+
+                    url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Himmelblau_function.svg/720px-Himmelblau_function.svg.png"
                     break;
                 case "booth":
                     objectiveFunction1 = function (x) {
                         var result = (x[0] + 2 * x[1] - 7) * (x[0] + 2 * x[1] - 7) + (2 * x[0] + x[1] - 5) * (2 * x[0] + x[1] - 5)
                         return result;
                     }
+
+                    url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Booth%27s_function.pdf/page1-800px-Booth%27s_function.pdf.jpg"
                     break;
 
             }
 
+            document.getElementById("graph").src=url;
             reset();
 
 
