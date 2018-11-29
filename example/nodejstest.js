@@ -1,4 +1,5 @@
 Cuckoo = require("../cuckoo.js");
+_=require("underscore")
 
 var objectiveFunction1 = function (x) {
     var result = 0;
