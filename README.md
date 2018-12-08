@@ -57,8 +57,10 @@ cuckoo.output(outputFlag); // Output the result. Print the result after this ite
 ```
 
 ## Example
-Live demo: https://luyuliu.github.io/cuckoo.js/example/graph/
+### Live demo: 
+https://luyuliu.github.io/cuckoo.js/example/graph/
 
+### Node.js example
 ```js
 Cuckoo = require("../cuckoo.js");
 
@@ -80,6 +82,6 @@ for (var i = 0; i < maxgen; i++) {
     cuckoo.next(false);
     console.log(cuckoo.output());
 }
-
-
 ```
+## Acknowledge
+Thanks to [@Ningchuan Xiao](https://github.com/ncxiao) and his Python script, and [@Xin-She Yang](https://www.mathworks.com/matlabcentral/fileexchange/29809-cuckoo-search-cs-algorithm) and his Matlab script, this project can be finished. This is a final project for OSU GEOG8200.
