@@ -1,7 +1,12 @@
 # cuckoo.js
 
-An Javascript library to implement cuckoo search (basic version).
+An cuckoo search JavaScript library.
 
+## Feature
+ * Integer and real number optimization.
+ * upperBound and lowerBound array.
+ * Support WebWorker, node.js, and browser.
+ 
 ## Import
 Please be aware that this library depends on [underscore.js](https://underscorejs.org/). Make sure install underscore.js before using.
 
@@ -12,7 +17,7 @@ Web browser environment:
 
 Node.js environment:
 ```bash
-$ npm install cuckoo (not available yet)
+$ npm install cuckoo
 ```
 and
 
@@ -20,21 +25,28 @@ and
 Cuckoo = require("../cuckoo.js"); // Add to the first line.
 ```
 
-## Usage
+## API usage
 ```js
-// New
-var cuckoo = new Cuckoo(objectiveFunction1, nestCount, dimension, Pa, lowerBound, upperBound, uniqueFlag);
+var cuckoo = new Cuckoo(objectiveFunction,
+    nestCount, // The number of nests.
+    dimension, // The dimension of the optimization problem.
+    Pa, // The rate of nests replacement. Default to 0.25.
+    lowerBound, // The lower bound array. The demension of this array should be equal to dimension.
+    upperBound, // The upper bound array. The demension of this array should be equal to dimension.
+    intFlag, // True if the problem is an integer problem; False otherwise.
+    uniqueFlag // True if each dimension should be different from each other; False otherwise.
+);
 
 // Initialization
-cuckoo.init();
+cuckoo.init(); // Init the cuckoo search process.
 
 // Next iteration
-cuckoo.next();
+cuckoo.next(); // Proceed to the next iteration.
 
 // Output
-cuckoo.output();
+cuckoo.output(outputFlag); // Output the result. Print the result after this iteration if outputFlag is true.
 
-// The output is:
+// The output is a JSON object:
 //{ 
 //  solution: [ 0, 0, 0, 0 ], 
 //  objective: 0 
@@ -57,7 +69,7 @@ var objectiveFunction1 = function (x) {
 
 var upperBound = [99, 99, 99, 99];
 var lowerBound = [0, 0, 0, 0];
-var cuckoo = new Cuckoo(objectiveFunction1, 10, 4, 0.25, lowerBound, upperBound);
+var cuckoo = new Cuckoo(objectiveFunction1, 10, 4, 0.25, lowerBound, upperBound, true, false);
 cuckoo.init();
 var maxgen = 100;
 
