@@ -1,6 +1,6 @@
 # cuckoo.js
 
-An cuckoo search JavaScript library.
+A cuckoo search JavaScript library.
 
 ## Feature
  * Integer and real number optimization.
@@ -13,15 +13,18 @@ Please be aware that this library depends on [underscore.js](https://underscorej
 Web browser environment: 
 ```HTML
 <script src="cuckoo.js"></script>
+<script src="underscore.js"></script>
 ```
 
 Node.js environment:
 ```bash
 $ npm install cuckoo-search
+$ npm install underscore
 ```
 and
 
 ```js
+// _ = require("cuckoo-search");
 Cuckoo = require("cuckoo-search"); // Add to the first line.
 ```
 
