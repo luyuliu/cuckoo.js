@@ -1,4 +1,4 @@
-Cuckoo = require("../cuckoo.js");
+Cuckoo = require("../cuckoo.min.js");
 
 _=require("underscore")
 

@@ -1,6 +1,4 @@
 (function () {
-    //'use strict';
-
     function Cuckoo(objectiveFunction, nestCount, dimension, Pa, Lb, Ub, intFlag,uniqueFlag ) {
         // nestCount: The number of nests;
         // dimension: The dimension of x;
