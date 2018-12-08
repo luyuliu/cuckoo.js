@@ -83,5 +83,7 @@ for (var i = 0; i < maxgen; i++) {
     console.log(cuckoo.output());
 }
 ```
-## Acknowledge
-Thanks to [@Ningchuan Xiao](https://github.com/ncxiao) and his Python script, and [@Xin-She Yang](https://www.mathworks.com/matlabcentral/fileexchange/29809-cuckoo-search-cs-algorithm) and his Matlab script, this project can be finished. This is a final project for OSU GEOG8200.
+## Acknowledgement
+ * The basic CS algorithm is based on [@Xin-She Yang](https://www.mathworks.com/matlabcentral/fileexchange/29809-cuckoo-search-cs-algorithm)'s Matlab script. 
+ * I also referred to [@Ningchuan Xiao](https://github.com/ncxiao)'s Python script. 
+ * This is a final project for OSU GEOG8200.
