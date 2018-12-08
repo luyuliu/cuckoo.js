@@ -22,7 +22,7 @@ $ npm install cuckoo
 and
 
 ```js
-Cuckoo = require("../cuckoo.js"); // Add to the first line.
+Cuckoo = require("cuckoo"); // Add to the first line.
 ```
 
 ## API usage
