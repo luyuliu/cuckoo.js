@@ -17,12 +17,12 @@ Web browser environment:
 
 Node.js environment:
 ```bash
-$ npm install cuckoo
+$ npm install cuckoo-search
 ```
 and
 
 ```js
-Cuckoo = require("../cuckoo.js"); // Add to the first line.
+Cuckoo = require("cuckoo-search"); // Add to the first line.
 ```
 
 ## API usage
