@@ -16,8 +16,16 @@
 
     <style>
         /* set the CSS */
+h1 {
+    font-family: "Bookman", Times, serif;
+}
 
-body { font: 12px Arial;}
+h2{
+    font-family: "Bookman", Times, serif;
+}
+body { font: 12px Arial;
+    background-color:#f1f1f1
+}
 
 path { 
     stroke: steelblue;
@@ -34,7 +42,6 @@ path {
 }
 
 .button-cell{
-    display: table-cell;
     margin-top: 0;
     margin-bottom: 10px;
     padding-left: 10px;
@@ -55,94 +62,335 @@ path {
     padding-top: 0;
 }
 
+.collapsible,
+.collapsible:active {
+    background-color: #C8C6C6;
+    color: #111;
+    cursor: pointer;
+
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    
+
+    overflow: hidden;
+}
+
+
+
+.collapsible:hover {
+    
+    overflow: hidden;
+    background-color: #555;
+    -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  transition:.5s;
+}
+
+
+.sidebar-content{
+    padding: 0 18px;
+    overflow: hidden;
+    background-color: #f1f1f1;
+    height:0;
+}
+
+
+.content-hidden{
+    -webkit-transition: all 2s ease !important;  
+    -moz-transition: all 2s ease !important;  
+    -o-transition: all 2s ease !important;  
+    -ms-transition: all 2s ease !important;  
+    transition: all 2s ease !important;
+}
+
+.content-display {
+    height:auto;
+}
+
+
+#side-bar-wrapper{
+    width:250px; 
+   max-width:250px; 
+   min-width:250px; 
+   display: inline-block;
+
+   z-index: 99999
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    left: 0;
+    background-color: #F6F6F6;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    border-right-width: 2px;
+    border-right-style: solid;
+
+}
+
+.sidenav b {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 40px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    cursor: pointer;
+
+}
+
+.sidenav b:hover {
+    color: #111;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+.mini-submenu {
+    margin: 0;
+    display: none;
+    background-color: white;
+    border: 0px solid rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    padding: 9px;
+    position: relative;
+    margin-top: 13px;
+    z-index: 900;
+    height: 100%;
+    box-shadow: 2px 2px 5px gray;
+    float: left;
+}
+
+.mini-submenu:hover {
+    cursor: pointer;
+}
+
+.mini-submenu .icon-bar {
+    border-radius: 1px;
+    display: block;
+    height: 2px;
+    width: 22px;
+    margin-top: 3px;
+}
+
+.mini-submenu .icon-bar {
+    background-color: #000;
+}
+
+.meta-container-collapsed {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    float: right;
+    transition: 0.5s;
+}
+
+.meta-container-expanded {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: calc(100% - 250px);
+    height: 100%;
+    float: right;
+    transition: 0.5s;
+}
+
+
 </style>
 </head>
 
 <body>
-    <div id="upper-container">
-        <div id="banner">
-            <h1>Cuckoo Search Visualization</h1>
-        </div>
-        <div id="option">
-            <p>
-                <form>
-                    <fieldset>
-                        <legend style="font-size:20px;">Output</legend>
-                        <div id="output-container">
-                            Solution: <input id="solution" type="text" name="1" value="">
-                            Objective: <input id="objective" type="text" name="2" value="">
-                            Iteration: <input id="iteration" type="text" name="3" value="">
-                        </div>
-                    </fieldset>
-                </form>
-            </p>
+    <div id="side-bar" class="sidenav" style="width: 250px;">
+        <div id="side-bar-wrapper">
+            <b href="javascript:void(0)" class="closebtn" onclick="navHandler()">&times;</b>
+            <button class="collapsible">Output</button>
+            <div class="sidebar-content content-display">
 
-            <p>
-                <form>
-                    <fieldset>
-                        <legend style="font-size:20px;">Console</legend>
-                        <div class="function-cell"> Select the function to be minimized on this 2D space: <select id="function">
-                                <option value="sum">y = x1 + x2</option>
-                                <option value="rosen">Rosenbrock function</option>
-                                <option value="booth">Booth function</option>
-                                <option value="him">Himmelblau's function</option>
-                                <option value="ras">Rastrigin function</option>
-                                <option value="ack">Ackley function</option>
-                                <option value="buk">Bukin function N.6</option>
-                                <option value="mat">Matyas function</option>
-                                <option value="levi">Lévi function N.13</option>
-                            </select> <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About
-                                this
-                                function</a></div>
-                        <div id="button-container" style="display: table-row">
-                            <div class="button-cell">Execute next step: <input type="button" value="Next" onclick="updateData()" /></div>
-                            <div class="button-cell">Run the loop (maxgen =  <input id="loop" type="text" name="7"
-                                value="100" style="width:30px;"> ) :</div>
-                                   
-                            <div class="button-cell"><input type="button" value="Run" title="Run the loop with a 0.5s interval."
-                                onclick="autoRun()" /> OR     <input type="button" value="FastRun" title="Run instantly."
-                                    onclick="fastRun()" /></div>
-                            <div class="button-cell">Refresh the panel: <input type="button" value="Refresh" onclick="Reset()" /></div>
-                        </div>
+                <p>
+                    <form>
+                        <fieldset>
+                            <legend style="font-size:20px;">Output</legend>
+                            <div id="output-container">
+                                Solution: <input id="solution" type="text" name="1" value="">
+                                Objective: <input id="objective" type="text" name="2" value="">
+                                Iteration: <input id="iteration" type="text" name="3" value="">
+                            </div>
+                        </fieldset>
+                    </form>
+                </p>
 
-                        
-                    </fieldset>
-                </form>
-            </p>
+            </div>
+            <button class="collapsible">Console</button>
+            <div class="sidebar-content content-display">
 
-            <p>
-                <form>
-                    <fieldset>
-                        <legend style="font-size:20px;">Simulation</legend>
-                        <div id="button-container" style="display: table-row">
-                            <div class="button-cell">Repeat Cuckoo search for <input id="runTime" type="text" name="5"
-                                    value="10" style="width:20px;"> times
-                                <input name="runButton" type="button" value="Run!" onclick="KeepRun()" /></div>
-                            <div class="button-cell">Average runtime: <input id="average" type="text" name="4" value=""></div>
-                        </div>
-                    </fieldset>
-                </form>
-            </p>
+                <p>
+                    <form>
+                        <fieldset>
+                            <legend style="font-size:20px;">Console</legend>
+                            <div id="button-container">
+                                <div class="button-cell">Select the function to be minimized on this 2D space: <select
+                                        id="function">
+                                        <option value="sum">y = x1 + x2</option>
+                                        <option value="rosen">Rosenbrock function</option>
+                                        <option value="booth">Booth function</option>
+                                        <option value="him">Himmelblau's function</option>
+                                        <option value="ras">Rastrigin function</option>
+                                        <option value="ack">Ackley function</option>
+                                        <option value="buk">Bukin function N.6</option>
+                                        <option value="mat">Matyas function</option>
+                                        <option value="levi">Lévi function N.13</option>
+                                    </select>
+                                    <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">About</a></div>
 
+                                <div class="button-cell">Select the mode: <select id="mode">
+                                        <option value="int">integer</option>
+                                        <option value="float">float</option>
+                                    </select></div>
+                                <div class="button-cell">Refresh the panel: <input type="button" value="Refresh"
+                                        onclick="Reset()" /></div>
+                                <div class="button-cell">Execute next step: <input type="button" value="Next" onclick="updateData()" /></div>
+                                <div class="button-cell">Run the loop (maxgen = <input id="loop" type="text" name="7"
+                                        value="100" style="width:30px;">
+                                    ):</div>
 
+                                <div class="button-cell"><input type="button" value="Run" title="Run the loop with a 0.5s interval."
+                                        onclick="autoRun()" />
+                                    OR <input type="button" value="FastRun" title="Run instantly." onclick="fastRun()" /></div>
+
+                            </div>
+                        </fieldset>
+                    </form>
+                </p>
+            </div>
+            <button class="collapsible">Simulation</button>
+            <div class="sidebar-content content-display">
+
+                <p>
+                    <form>
+                        <fieldset>
+                            <legend style="font-size:20px;">Simulation</legend>
+                            <div id="button-container" style="display: table-row">
+                                <div class="button-cell">Repeat Cuckoo search for <input id="runTime" type="text" name="5"
+                                        value="10" style="width:20px;"> times
+                                    <input name="runButton" type="button" value="Run!" onclick="KeepRun()" /></div>
+                                <div class="button-cell">Average runtime: <input id="average" type="text" name="4"
+                                        value=""></div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </p>
+
+            </div>
         </div>
     </div>
+
+
     <a href="https://github.com/luyuliu/cuckoo.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
             alt="Fork me on GitHub"></a>
-
-    <div id="plot-container" style="float: left; width: 50%;">
-
+    <div id="meta-container" class="meta-container-expanded">
+        <div onclick="navHandler()" class="mini-submenu" id="mini" title="Expand the map control" style="display: block;margin-left:15px;">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </div>
+        <div id="upper-container">
+            <div id="banner">
+                <h1 style="padding-left: 80px;">Cuckoo Search Visualization</h1>
+            </div>
+        </div>
+        <div id="plot-container" class="plot-class" style="float: left; width: 50%;"></div>
+        <div class="plot-class" style="float: right; width: 50%;">
+            <table>
+                <tr>
+                    <td>
+                        <h2>The pane to the left is a 2D space where selected function will be minimized.</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h2>The dot points to the solution given by the Cuckoo search at each iteration.</h2>
+                    </td>
+                </tr>
+                <tr>
+                        <td>
+                            <h2>The link represents the evolution path of the solution.</h2>
+                        </td>
+                    </tr>
+                <tr>
+                    <td>
+                        <h2>The function's graph: (graphs are from <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">this
+                                page</a>).</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                            <div id="graph-container"><img style="width:70%;" id="graph" src="./graph/sum.png" /></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div id="plot-container" style="float: right; width: 50%;">
-        <h2>The pane to the left is a 2D space where selected function will be minimized. This library will only find one
-            integer solution.</h2>
-        <h3>The dot points to the solution given by the Cuckoo search at each iteration.</h3>
-        <h3>The function's graph: (graphs are from <a href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">this
-                page</a>).</h3>
-        <div id="graph-container"><img style="width:70%;" id="graph" src="./graph/sum.png" /></div>
-    </div>
-
     <script>
+        sideBarStatus = 1
+        function navHandler() {
+            if (sideBarStatus == 0) {
+                openNav();
+            } else {
+                closeNav();
+            }
+        }
+
+        function openNav() {
+            document.getElementById("side-bar").style.width = "250px";
+            document.getElementById("meta-container").setAttribute('class', "meta-container-expanded");
+            sideBarStatus = 1;
+        }
+
+        function closeNav() {
+            document.getElementById("side-bar").style.width = "0";
+            document.getElementById("meta-container").setAttribute('class', "meta-container-collapsed");
+            sideBarStatus = 0;
+        }
+
+        var coll = document.getElementsByClassName("collapsible");
+
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                $(content).toggleClass('content-display');
+            });
+        }
+
+
         runTimeList = [];
         objectiveFunction1 = function (x) {
             var result = 0;
@@ -163,11 +411,13 @@ path {
         var currentData = cuckoo.output().solution;
         data.push({ x: +currentData[0][0], y: +currentData[1][0] });
 
+        var plotSize = $("#meta-container").width() / 2;
+
 
         // Set the dimensions of the canvas / graph
         var margin = { top: 30, right: 20, bottom: 30, left: 50 },
-            width = 600 - margin.left - margin.right,
-            height = 600 - margin.top - margin.bottom;
+            width = plotSize - margin.left - margin.right,
+            height = plotSize - margin.top - margin.bottom;
 
         // Set the ranges
         var x = d3.scale.linear().range([0, width]);
@@ -246,9 +496,8 @@ path {
             document.getElementById("objective").value = cuckoo.output().objective;
             document.getElementById("iteration").value = ++iteration;
 
-
             // Select the section we want to apply our changes to
-            var svg = d3.select("body").transition();
+            var svg = d3.select("#plot-container").transition();
 
             x.domain([d3.min(data, function (d) { return +d.x - 2; }), d3.max(data, function (d) { return +d.x + 2; })]);
             y.domain([d3.min(data, function (d) { return +d.y - 2; }), d3.max(data, function (d) { return +d.y + 2; })]);
@@ -291,7 +540,7 @@ path {
             reset();
             for (var i = 0; i < maxgen; i++) {
                 updateData();
-                if (Math.abs(cuckoo.output().objective) <=0.001 ) {
+                if (Math.abs(cuckoo.output().objective) <= 0.001) {
                     runTimeList.push(i)
                     break;
                 }
@@ -335,19 +584,46 @@ path {
         }
 
         function reset() {
+
+            d3.selectAll("svg").remove();
+
+
             maxgen = + $("#loop").val();
             $("#iteration").val(0)
             iteration = 0;
-            cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound);
+            var mode = $("#mode").val();
+            if (mode == "int") {
+                mode = true;
+            }
+            else {
+                mode = false;
+            }
+            cuckoo = new Cuckoo(objectiveFunction1, 10, 2, 0.25, lowerBound, upperBound, mode);
             cuckoo.init();
             data = [];
             currentData = cuckoo.output().solution;
             data.push({ x: currentData[0][0], y: currentData[1][0] });
 
+            var plotSize = $("#meta-container").width() / 2;
+            // Set the dimensions of the canvas / graph
+            var margin = { top: 30, right: 20, bottom: 30, left: 50 },
+                width = plotSize - margin.left - margin.right,
+                height = plotSize - margin.top - margin.bottom;
 
-            d3.selectAll("svg").remove();
+            // Set the ranges
+            var x = d3.scale.linear().range([0, width]);
+            var y = d3.scale.linear().range([height, 0]);
 
-            var svg = d3.select("body")
+            // Define the axes
+            var xAxis = d3.svg.axis().scale(x)
+                .orient("bottom").ticks(5);
+
+            var yAxis = d3.svg.axis().scale(y)
+                .orient("left").ticks(5);
+
+            x.domain([lowerBound[0] - 5, upperBound[0]]);
+            y.domain([lowerBound[1] - 5, upperBound[1]]);
+            var svg = d3.select("#plot-container")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
@@ -471,7 +747,7 @@ path {
                     objectiveFunction1 = function (x) {
                         var y = x[1];
                         var x = x[0];
-                        var result = 0.26*(x * x + y * y) - 0.48 * x * y;
+                        var result = 0.26 * (x * x + y * y) - 0.48 * x * y;
                         return result;
                     }
 
@@ -496,7 +772,14 @@ path {
 
         })
 
+        $("#mode").on("change", function (e) {
+            reset();
+        })
 
+        $(window).on("resize", function (e) {
+            console.log("resize")
+            reset();
+        })
 
     </script>
 </body>
