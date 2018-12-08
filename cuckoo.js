@@ -1,7 +1,7 @@
 (function () {
     //'use strict';
 
-    function Cuckoo(objectiveFunction, nestCount, dimension, Pa, Lb, Ub, uniqueFlag) {
+    function Cuckoo(objectiveFunction, nestCount, dimension, Pa, Lb, Ub, intFlag,uniqueFlag ) {
         // nestCount: The number of nests;
         // dimension: The dimension of x;
         // maxGeneration: Maximum generation of enumeration;
@@ -27,6 +27,7 @@
             uniqueFlag = false;
         }
         this.uniqueFlag = uniqueFlag;
+        this.intFlag = intFlag;
 
     }
 
@@ -122,7 +123,7 @@
 
             for (var i = 0; i < n; i++) {
                 // ____________________
-                fnew = this.objectiveFunction(nests_new[i])
+                fnew = parseFloat(this.objectiveFunction(nests_new[i]));
                 if (fnew < fitness[i]) {
                     fitness[i] = fnew;
                     nests[i] = nests_new[i];
@@ -152,7 +153,12 @@
                     v.push(this._randNorm());
                     step.push(u[j] / Math.pow(Math.abs(v[j]), (1 / this.beta)));
                     stepSize.push(0.01 * step[j] * (s[j] - best[j]));
-                    s1.push(parseInt(s[j] + stepSize[j] * this._randNorm()));
+                    if (!this.intFlag){
+                        s1.push(parseFloat(s[j] + stepSize[j] * this._randNorm()));
+                    }
+                    else{
+                        s1.push(parseInt(s[j] + stepSize[j] * this._randNorm()));
+                    }
                 }
                 this._simpleBounds(s1, this.lb, this.ub);
                 if (this.uniqueFlag) {
@@ -197,7 +203,12 @@
                 s = [];
                 for (var j = 0; j < s1.length; j++) {
                     stepsize.push(Math.random() * (s1[j] - s2[j]));
-                    s.push(parseInt(nests[i][j] + stepsize[j] * k[j]));
+                    if(!this.intFlag){
+                        s.push(parseFloat(nests[i][j] + stepsize[j] * k[j]));
+                    }
+                    else{
+                        s.push(parseInt(nests[i][j] + stepsize[j] * k[j]));
+                    }
                 }
                 this._simpleBounds(s, this.lb, this.ub);
                 if (this.uniqueFlag) {
