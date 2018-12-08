@@ -3,8 +3,8 @@
 A cuckoo search JavaScript library.
 
 ## Feature
- * Integer and real number optimization.
- * upperBound and lowerBound array.
+ * Support Integer and real number optimization.
+ * Support upperBound and lowerBound array.
  * Support WebWorker, node.js, and browser.
  
 ## Import
@@ -62,7 +62,7 @@ Live demo: https://luyuliu.github.io/cuckoo.js/example/graph/
 ```js
 Cuckoo = require("../cuckoo.js");
 
-var objectiveFunction1 = function (x) {
+var objectiveFunction = function (x) {
     var result = 0;
     for (var i in x) {
         result += (x[i])
@@ -72,7 +72,7 @@ var objectiveFunction1 = function (x) {
 
 var upperBound = [99, 99, 99, 99];
 var lowerBound = [0, 0, 0, 0];
-var cuckoo = new Cuckoo(objectiveFunction1, 10, 4, 0.25, lowerBound, upperBound, true, false);
+var cuckoo = new Cuckoo(objectiveFunction, 10, 4, 0.25, lowerBound, upperBound, true, false);
 cuckoo.init();
 var maxgen = 100;
 
