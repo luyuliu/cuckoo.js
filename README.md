@@ -30,7 +30,7 @@ Cuckoo = require("cuckoo-search"); // Add to the first line.
 
 ## API usage
 ```js
-var cuckoo = new Cuckoo(objectiveFunction, // Objective Function to be optimized.
+var cuckoo = new Cuckoo(objectiveFunction, // Objective Function to be **minimized**.
     nestCount, // The number of nests.
     dimension, // The dimension of the optimization problem.
     Pa, // The rate of nests replacement. Default to 0.25.
