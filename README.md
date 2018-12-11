@@ -37,7 +37,7 @@ var cuckoo = new Cuckoo(objectiveFunction, // Objective Function to be **minimiz
     lowerBound, // The lower bound array. The demension of this array should be equal to dimension.
     upperBound, // The upper bound array. The demension of this array should be equal to dimension.
     intFlag, // True if the problem is an integer problem; False otherwise.
-    uniqueFlag // True if each dimension should be different from each other; False otherwise.
+    uniqueFlag // True if each dimension's value should be different; False otherwise. e.g.: If true, the solution [0, 0, 0, 0] here is not allowed.
 );
 
 // Initialization
