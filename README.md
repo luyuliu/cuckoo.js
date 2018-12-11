@@ -1,9 +1,10 @@
 # cuckoo.js
 
-A cuckoo search JavaScript library.
+A cuckoo search JavaScript library. Read more about [Cuckoo Search Algorithm](https://ieeexplore.ieee.org/abstract/document/5393690).
 
 ## Feature
- * Support Integer and real number optimization.
+ * Implement basic cuckoo search algorithm.
+ * Support integer and real number optimization.
  * Support upperBound and lowerBound array.
  * Support WebWorker, node.js, and browser.
  
@@ -24,13 +25,12 @@ $ npm install underscore
 and
 
 ```js
-// _ = require("cuckoo-search");
 Cuckoo = require("cuckoo-search"); // Add to the first line.
 ```
 
 ## API usage
 ```js
-var cuckoo = new Cuckoo(objectiveFunction,
+var cuckoo = new Cuckoo(objectiveFunction, // Objective Function to be optimized.
     nestCount, // The number of nests.
     dimension, // The dimension of the optimization problem.
     Pa, // The rate of nests replacement. Default to 0.25.
