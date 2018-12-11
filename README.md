@@ -62,7 +62,7 @@ https://luyuliu.github.io/cuckoo.js/example/graph/
 
 ### Node.js example
 ```js
-Cuckoo = require("../cuckoo.js");
+Cuckoo = require("cuckoo-research");
 
 var objectiveFunction = function (x) {
     var result = 0;
